@@ -9,6 +9,57 @@ void setUp() {}
 /* Required by the unity test framework */
 void tearDown() {}
 
+#pragma region mystring
+
+void test_mystrlen()
+{
+    const char* tst_str1 = "Hello World";
+    TEST_ASSERT_EQUAL(11, mystrlen(tst_str1));
+}
+
+void test_mystrcpy()
+{
+    const char tst_str1[16] = "Hello World";
+    char buff[16];
+    mystrcpy(buff, 16, tst_str1);
+    TEST_ASSERT_EQUAL_CHAR_ARRAY(tst_str1, buff, 12);
+}
+
+void test_mystrcat()
+{
+    const char tst_str1[16] = "Hello World";
+    char buff[64] = "I am first. Next is ";
+    char result[64] = "I am first. Next is Hello World";
+    mystrcat(buff, 64, tst_str1);
+    TEST_ASSERT_EQUAL_CHAR_ARRAY(result, buff, 64);
+}
+
+void test_mystrcmp()
+{
+    const char tst_str1[16] = "Hello5World";
+    const char tst_str2[16] = "Hello0World";
+    const char tst_str3[16] = "Hello9World";
+    const char tst_str4[16] = "Hello5Worl";
+    const char tst_str5[16] = "Hello5World!";
+    TEST_ASSERT_EQUAL( 0, mystrcmp(tst_str1, tst_str1, 16));
+    TEST_ASSERT_EQUAL( 1, mystrcmp(tst_str1, tst_str2, 16));
+    TEST_ASSERT_EQUAL(-1, mystrcmp(tst_str1, tst_str3, 16));
+    TEST_ASSERT_EQUAL( 1, mystrcmp(tst_str1, tst_str4, 16));
+    TEST_ASSERT_EQUAL(-1, mystrcmp(tst_str1, tst_str5, 16));
+}
+
+void test_mystring()
+{
+    RUN_TEST(test_mystrlen);
+    RUN_TEST(test_mystrcpy);
+    RUN_TEST(test_mystrcat);
+    RUN_TEST(test_mystrcmp);
+}
+
+#pragma endregion
+
+#pragma region myutils
+
 #pragma region factorial
 
 void test_factorial_all_ok(void)
@@ -98,11 +149,8 @@ void test_vsum_all_ok(void)
 
 #pragma endregion
 
-int main(void)
+void test_myutils()
 {
-    /* Initiate the Unity Test Framework */
-    UNITY_BEGIN();
-
     /* Run Test functions for factorial */
     RUN_TEST(test_factorial_all_ok);
 
@@ -118,6 +166,35 @@ int main(void)
 
     /* Run Test functions for vsum */
     RUN_TEST(test_vsum_all_ok);
+}
+
+#pragma endregion
+
+#pragma region bitmask
+
+void test_bitmask_all()
+{
+    TEST_ASSERT_EQUAL(0x8ul, bit_set(0x0ul, 3));
+    TEST_ASSERT_EQUAL(0x7ful, bit_reset(0xfful, 7));
+    TEST_ASSERT_EQUAL(0xf0ul, bit_flip(0xf4ul, 2));
+    TEST_ASSERT_EQUAL(  true, bit_query(0xf4ul, 2));
+}
+
+void test_bitmask()
+{
+    RUN_TEST(test_bitmask_all);
+}
+
+#pragma endregion
+
+int main(void)
+{
+    /* Initiate the Unity Test Framework */
+    UNITY_BEGIN();
+
+    test_myutils();
+    test_mystring();
+    test_bitmask();
 
     /* Close the Unity Test Framework */
     return UNITY_END();
