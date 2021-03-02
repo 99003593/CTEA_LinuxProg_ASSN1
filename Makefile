@@ -1,21 +1,29 @@
-SRC = libs/Unity/src/unity.c \
-		src/bitmask.c \
-		src/mystring.c \
-		src/myutils.c \
-		src/test.c
+SRC_FILES = $(wildcard src/*.c)
+SRC_FILES += $(wildcard libs/Unity/src/*.c)
+INC_DIRS = inc libs/Unity/src
 
-INC = -Ilibs/Unity/src/ -Iinc
+PROJ = test
+OBJ_DIR = build
+OBJ_FILES = $(addprefix $(OBJ_DIR)/,$(SRC_FILES:.c=.o))
+OUT_FILE = $(OBJ_DIR)/$(PROJ).out
+
+CFLAGS += -g -Wall
+CFLAGS += $(addprefix -I,$(INC_DIRS))
+LDFLAGS += -lm
 
 .PHONY: all run clean
 
-test.out: $(SRC)
-	gcc -c $^ $(INC)
-	gcc *.o -lm -o $@
+all: $(OUT_FILE)
 
-all: test.out
+$(OBJ_DIR)/%.o: %.c
+	mkdir -p $(dir $@)
+	gcc -c $(CFLAGS) $< -o $@
 
-run: test.out
-	./$^
+$(OUT_FILE): $(OBJ_FILES)
+	gcc $(OBJ_FILES) $(LDFLAGS) -o $@
+
+run: $(OUT_FILE)
+	./$(OUT_FILE)
 
 clean:
-	rm -rf *.o test.out
+	rm -rf $(OBJ_DIR)
