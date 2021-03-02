@@ -29,7 +29,7 @@ size_t mystrcpy(char *dst, size_t dst_len, const char *src)
 
 size_t mystrcat(char *dst, size_t dst_len, const char *src)
 {
-    size_t len = mystrlen(src);
+    size_t len = mystrlen(dst);
     const char *ps = src;
     char *pd = dst+len;
     for(;
